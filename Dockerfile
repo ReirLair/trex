@@ -1,7 +1,7 @@
 FROM python:3.10
 
 # Set working directory
-WORKDIR /app
+WORKDIR /root
 
 # Install necessary dependencies
 RUN apt-get update && apt-get install -y sudo git curl build-essential libvips-dev
@@ -18,8 +18,14 @@ ENV NPM_CONFIG_CACHE="/app/home/.npm/.cache"
 RUN mkdir -p /app/home/.npm-global /app/home/.npm/.cache && \
     chmod -R 777 /app/home/.npm-global /app/home/.npm/.cache
 
+# Bypass existing directory issue before cloning
+RUN rm -rf /app && mkdir -p /app
+
 # Clone the repository
 RUN git clone https://github.com/ReirLair/reikerpy.git /app
+
+# Set working directory to the app
+WORKDIR /app
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
